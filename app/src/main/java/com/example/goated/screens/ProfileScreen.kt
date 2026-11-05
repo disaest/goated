@@ -31,10 +31,6 @@ import com.example.goated.ui.theme.*
 import com.example.goated.viewmodel.ProfileViewModel
 import io.github.jan.supabase.auth.status.SessionStatus
 
-/**
- * Раздел «Профиль»: пока сессия загружается — индикатор,
- * без входа — экран регистрации/входа, после входа — профиль.
- */
 @Composable
 fun ProfileRoute(navController: NavHostController) {
     val status by AuthRepository.sessionStatus.collectAsStateWithLifecycle()
@@ -168,7 +164,6 @@ fun ProfileScreen(navController: NavHostController, userId: String) {
     }
 }
 
-/** Выбор цвета аватара и баннера из готовых вариантов. */
 @Composable
 private fun StyleEditor(
     avatarKey: String,
@@ -215,7 +210,6 @@ private fun StyleEditor(
     }
 }
 
-/** Пустой слот избранного: переход к поиску, чтобы выбрать игру. */
 @Composable
 private fun AddTile(modifier: Modifier, onClick: () -> Unit) {
     val shape = RoundedCornerShape(Dimens.GameCardRadius)

@@ -13,7 +13,6 @@ import com.example.goated.R
 import com.example.goated.navigation.Tab
 import com.example.goated.ui.theme.*
 
-/** Нижняя навигация: Главная, Поиск, Жанры, Профиль. Активная иконка — голубая. */
 @Composable
 fun BottomBar(selectedTab: Tab?, onSelect: (Tab) -> Unit) {
     Row(

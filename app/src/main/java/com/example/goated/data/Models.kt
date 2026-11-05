@@ -3,7 +3,6 @@ package com.example.goated.data
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
-// ---------- Таблицы Supabase ----------
 
 @Serializable
 data class Game(
@@ -41,7 +40,6 @@ data class Profile(
     @SerialName("banner_style") val bannerStyle: String? = null
 )
 
-/** Используется только при создании профиля: email читать из profiles нельзя (RLS). */
 @Serializable
 data class NewProfile(
     val id: String,
@@ -63,7 +61,6 @@ data class Screenshot(
     @SerialName("order_index") val orderIndex: Int = 0
 )
 
-/** Одна запись на пару «пользователь — игра»: оценка, рецензия и отметка «пройдено». */
 @Serializable
 data class Review(
     val id: String,
@@ -75,7 +72,6 @@ data class Review(
     @SerialName("created_at") val createdAt: String? = null
 )
 
-/** Рецензия вместе с ником автора (join reviews -> profiles). */
 @Serializable
 data class ReviewWithAuthor(
     val id: String,
@@ -114,11 +110,9 @@ data class CollectionGame(
     @SerialName("order_index") val orderIndex: Int = 0
 )
 
-// ---------- Модели для экранов ----------
 
 data class CollectionWithGames(val collection: Collection, val games: List<Game>)
 
 data class GenreWithGames(val genre: Genre, val games: List<Game>)
 
-/** Игра вместе с оценкой текущего пользователя (для профиля и списка пройденных). */
 data class RatedGame(val game: Game, val userRating: Float?)

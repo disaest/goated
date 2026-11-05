@@ -21,13 +21,8 @@ import com.example.goated.ui.theme.AccentBlue
 import com.example.goated.ui.theme.StarEmpty
 import kotlin.math.roundToInt
 
-/** Округление до шага 0.5: 4.1 -> 4.0, 4.3 -> 4.5. */
 fun roundToHalf(value: Float): Float = (value * 2f).roundToInt() / 2f
 
-/**
- * Пять звёзд с поддержкой половинок.
- * В интерактивном режиме нажатие на левую половину звезды ставит x.5, на правую — целое значение.
- */
 @Composable
 fun StarRating(
     rating: Float?,
@@ -76,10 +71,8 @@ fun StarRating(
     }
 }
 
-/** Число оценки в формате «4,5». */
 fun formatRating(value: Float): String = String.format(java.util.Locale.forLanguageTag("ru"), "%.1f", value)
 
-/** «1 оценка», «3 оценки», «12 оценок». */
 fun ratingsCountText(count: Int): String {
     val mod10 = count % 10
     val mod100 = count % 100

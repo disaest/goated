@@ -18,14 +18,12 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-/** Общее состояние экрана со списком: загрузка, ошибка или данные. */
 data class ListUiState<T>(
     val loading: Boolean = true,
     val error: String? = null,
     val items: List<T> = emptyList()
 )
 
-/** Базовый класс для экранов, которые просто загружают один список. */
 abstract class ListViewModel<T> : ViewModel() {
     private val _state = MutableStateFlow(ListUiState<T>())
     val state: StateFlow<ListUiState<T>> = _state.asStateFlow()
@@ -48,18 +46,15 @@ abstract class ListViewModel<T> : ViewModel() {
     }
 }
 
-/** Главная: подборки Popular, New, Recommended. */
 class MainViewModel : ListViewModel<CollectionWithGames>() {
     override suspend fun loadItems() = GameRepository.getCollectionsWithGames()
 }
 
-/** Жанры: каждый жанр с тремя самыми популярными играми. */
 class GenresViewModel : ListViewModel<GenreWithGames>() {
     override suspend fun loadItems() =
         GameRepository.getGenresWithGames().map { it.copy(games = it.games.take(3)) }
 }
 
-/** Все игры выбранного жанра. */
 class GenreGamesViewModel(private val genreId: Int) : ViewModel() {
     data class UiState(
         val loading: Boolean = true,
@@ -89,7 +84,6 @@ class GenreGamesViewModel(private val genreId: Int) : ViewModel() {
     }
 }
 
-/** Поиск игр по названию с задержкой (debounce) 300 мс. */
 @OptIn(FlowPreview::class)
 class SearchViewModel : ViewModel() {
     data class UiState(
@@ -138,8 +132,6 @@ class SearchViewModel : ViewModel() {
             _state.update { it.copy(results = emptyList(), searching = false, error = e.toUserMessage()) }
         }
     }
-
-    /** Подсказки до ввода запроса: популярные игры и жанры. */
     private fun loadSuggestions() {
         viewModelScope.launch {
             try {
@@ -147,7 +139,6 @@ class SearchViewModel : ViewModel() {
                 val genres = GameRepository.getGenres()
                 _state.update { it.copy(popular = popular, genres = genres) }
             } catch (_: Exception) {
-                // подсказки необязательны: экран поиска работает и без них
             }
         }
     }

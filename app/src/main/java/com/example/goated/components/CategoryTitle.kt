@@ -9,8 +9,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.example.goated.ui.theme.AccentBlue
-
-/** Заголовок подборки по центру с тонкой голубой полоской под ним. */
 @Composable
 fun CategoryTitle(title: String, modifier: Modifier = Modifier) {
     Column(modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
@@ -26,7 +24,6 @@ fun CategoryTitle(title: String, modifier: Modifier = Modifier) {
     }
 }
 
-/** Небольшая подпись раздела в стиле профиля Figma: «ИЗБРАННОЕ», «НЕДАВНЯЯ АКТИВНОСТЬ». */
 @Composable
 fun SectionLabel(text: String, modifier: Modifier = Modifier, trailing: String? = null) {
     Row(modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {

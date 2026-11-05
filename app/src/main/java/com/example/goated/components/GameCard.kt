@@ -20,10 +20,6 @@ import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.example.goated.ui.theme.*
 
-/**
- * Карточка игры: вертикальная обложка (без растягивания, ContentScale.Crop),
- * название под обложкой и звёзды рейтинга под названием.
- */
 @Composable
 fun GameCard(
     title: String,
@@ -84,7 +80,6 @@ fun GameCover(title: String, coverUrl: String?, modifier: Modifier = Modifier) {
     }
 }
 
-/** Звёзды + число средней оценки. Размер звёзд подстраивается под ширину карточки. */
 @Composable
 private fun CardRating(rating: Float?) {
     BoxWithConstraints(Modifier.fillMaxWidth()) {

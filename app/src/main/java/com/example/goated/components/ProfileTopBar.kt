@@ -22,7 +22,6 @@ import com.example.goated.R
 import com.example.goated.data.Profile
 import com.example.goated.ui.theme.*
 
-/** Заранее подготовленные варианты оформления профиля (значения хранятся в profiles). */
 object ProfileStyles {
     val avatarColors: List<Pair<String, Color>> = listOf(
         "blue" to AccentBlue,
@@ -45,7 +44,6 @@ object ProfileStyles {
         banners.firstOrNull { it.first == key }?.second ?: banners.first().second
 }
 
-/** Аватар — круг выбранного цвета с иконкой пользователя. */
 @Composable
 fun Avatar(color: Color, size: Dp, modifier: Modifier = Modifier) {
     Box(
@@ -65,7 +63,6 @@ fun Avatar(color: Color, size: Dp, modifier: Modifier = Modifier) {
     }
 }
 
-/** Шапка профиля: баннер-градиент, аватар, никнейм и био. */
 @Composable
 fun ProfileTopBar(
     profile: Profile?,

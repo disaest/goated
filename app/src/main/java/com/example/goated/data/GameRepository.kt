@@ -4,13 +4,8 @@ import io.github.jan.supabase.postgrest.from
 import io.github.jan.supabase.postgrest.query.Columns
 import io.github.jan.supabase.postgrest.query.Order
 
-/**
- * Каталог игр: подборки, жанры, поиск, карточка игры.
- * Функции бросают исключения, а ViewModel превращает их в состояние ошибки.
- */
 object GameRepository {
 
-    /** Порядок подборок на главном экране. */
     private val collectionOrder = listOf("Popular", "New", "Recommended")
 
     suspend fun getGame(gameId: String): Game? =
@@ -18,7 +13,6 @@ object GameRepository {
             .select { filter { eq("id", gameId) } }
             .decodeSingleOrNull<Game>()
 
-    /** Игры по списку id в том же порядке, в каком переданы id. */
     suspend fun getGamesByIds(ids: List<String>): List<Game> {
         if (ids.isEmpty()) return emptyList()
         val games = supabase.from("games")
@@ -28,7 +22,6 @@ object GameRepository {
         return ids.distinct().mapNotNull { games[it] }
     }
 
-    /** Подборки главного экрана — три запроса вместо отдельного запроса на каждую подборку. */
     suspend fun getCollectionsWithGames(): List<CollectionWithGames> {
         val collections = supabase.from("collections").select().decodeList<Collection>()
             .sortedBy { c -> collectionOrder.indexOf(c.title).let { if (it < 0) Int.MAX_VALUE else it } }
@@ -50,7 +43,6 @@ object GameRepository {
     suspend fun getGenres(): List<Genre> =
         supabase.from("genres").select { order("id", Order.ASCENDING) }.decodeList<Genre>()
 
-    /** Все жанры, у каждого — игры, отсортированные по популярности. */
     suspend fun getGenresWithGames(): List<GenreWithGames> {
         val genres = getGenres()
         val links = supabase.from("game_genres").select().decodeList<GameGenre>()
@@ -75,7 +67,6 @@ object GameRepository {
         return GenreWithGames(genre, getGamesByIds(ids).sortedWith(popularity))
     }
 
-    /** Поиск по названию без учёта регистра. */
     suspend fun searchGames(query: String): List<Game> {
         val text = query.trim().replace("%", "\\%").replace("_", "\\_")
         if (text.isEmpty()) return emptyList()
@@ -96,13 +87,12 @@ object GameRepository {
             .decodeList<Screenshot>()
             .map { it.imageUrl }
 
-    /** Рецензии с текстом к игре вместе с ником автора, новые сверху. */
     suspend fun getGameReviews(gameId: String): List<ReviewWithAuthor> =
         supabase.from("reviews")
             .select(Columns.raw("id, user_id, rating, comment, created_at, profiles(username)")) {
                 filter {
                     eq("game_id", gameId)
-                    neq("comment", "") // NULL тоже отбрасывается этим условием
+                    neq("comment", "")
                 }
                 order("created_at", Order.DESCENDING)
             }

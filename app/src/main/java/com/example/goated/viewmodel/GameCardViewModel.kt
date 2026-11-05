@@ -16,7 +16,6 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-/** Карточка игры: информация, скриншоты, средний рейтинг, своя оценка и рецензии. */
 class GameCardViewModel(private val gameId: String) : ViewModel() {
 
     data class UiState(
@@ -29,7 +28,6 @@ class GameCardViewModel(private val gameId: String) : ViewModel() {
         val isFavorite: Boolean = false,
         val isLoggedIn: Boolean = false,
         val saving: Boolean = false,
-        /** Одноразовое сообщение для Snackbar. */
         val message: String? = null
     ) {
         val myRating: Float? get() = myReview?.rating
@@ -49,7 +47,6 @@ class GameCardViewModel(private val gameId: String) : ViewModel() {
         viewModelScope.launch {
             _state.update { it.copy(loading = it.game == null, error = null) }
             try {
-                // независимые запросы выполняются параллельно
                 val game = async { GameRepository.getGame(gameId) }
                 val screenshots = async { GameRepository.getScreenshots(gameId) }
                 val reviews = async { GameRepository.getGameReviews(gameId) }
@@ -73,8 +70,6 @@ class GameCardViewModel(private val gameId: String) : ViewModel() {
             }
         }
     }
-
-    /** rating = null — удалить оценку. */
     fun setRating(rating: Float?) = runAction(
         success = if (rating == null) "Оценка удалена" else null
     ) { UserRepository.saveRating(gameId, rating) }
@@ -115,7 +110,6 @@ class GameCardViewModel(private val gameId: String) : ViewModel() {
 
     fun messageShown() = _state.update { it.copy(message = null) }
 
-    /** Сохранить изменение и перечитать данные (средний рейтинг пересчитывает база). */
     private fun runAction(success: String?, action: suspend () -> Unit) {
         if (_state.value.saving) return
         viewModelScope.launch {

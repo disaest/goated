@@ -39,10 +39,7 @@ import java.time.LocalDate
 import java.time.OffsetDateTime
 import java.time.format.DateTimeFormatter
 
-/**
- * Карточка игры. Порядок блоков: баннер → обложка и название → разработчик и дата →
- * описание → рейтинг → скриншоты → рецензии.
- */
+
 @Composable
 fun GameCardScreen(navController: NavHostController, gameId: String) {
     val vm: GameCardViewModel = viewModel(key = "game_$gameId") { GameCardViewModel(gameId) }
@@ -100,7 +97,6 @@ fun GameCardScreen(navController: NavHostController, gameId: String) {
                 Spacer(Modifier.height(24.dp))
             }
           }
-          // затемнение под статус-баром, чтобы текст не накладывался на системные иконки
           Box(
               Modifier.fillMaxWidth().windowInsetsTopHeight(WindowInsets.statusBars)
                   .background(Black.copy(alpha = 0.6f))
@@ -109,7 +105,6 @@ fun GameCardScreen(navController: NavHostController, gameId: String) {
     }
 }
 
-// ---------------- Баннер, обложка, информация ----------------
 
 @Composable
 private fun Banner(
@@ -178,7 +173,6 @@ private fun InfoLine(label: String, value: String) {
     }
 }
 
-// ---------------- Рейтинг ----------------
 
 @Composable
 private fun RatingBlock(
@@ -192,7 +186,6 @@ private fun RatingBlock(
     onLogin: () -> Unit
 ) {
     Column(Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
-        // Средний рейтинг по оценкам всех пользователей
         Text("Средняя оценка", style = MaterialTheme.typography.labelMedium)
         Spacer(Modifier.height(8.dp))
         Row(verticalAlignment = Alignment.CenterVertically) {
@@ -215,7 +208,6 @@ private fun RatingBlock(
 
         Spacer(Modifier.height(22.dp))
 
-        // Собственная оценка пользователя
         Text("Ваша оценка", style = MaterialTheme.typography.labelMedium)
         Spacer(Modifier.height(10.dp))
         if (!isLoggedIn) {
@@ -264,9 +256,6 @@ private fun RatingBlock(
     }
 }
 
-// ---------------- Скриншоты ----------------
-
-/** Один квадратный контейнер, скриншоты листаются влево-вправо. */
 @Composable
 private fun ScreenshotPager(urls: List<String>, title: String) {
     val pagerState = rememberPagerState { urls.size }
@@ -304,8 +293,6 @@ private fun ScreenshotPager(urls: List<String>, title: String) {
         }
     }
 }
-
-// ---------------- Рецензии ----------------
 
 @Composable
 private fun ReviewsBlock(
@@ -442,8 +429,6 @@ private fun ReviewCard(
         }
     }
 }
-
-// ---------------- Мелкие элементы ----------------
 
 @Composable
 private fun BlueDivider() {

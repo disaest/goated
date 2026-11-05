@@ -8,21 +8,15 @@ import kotlinx.serialization.Serializable
 import java.time.OffsetDateTime
 import java.util.UUID
 
-/**
- * Данные текущего пользователя: профиль, избранное, оценки, рецензии,
- * пройденные игры и история активности.
- */
 object UserRepository {
 
     const val FAVORITES_LIMIT = 4
 
-    /** Столбцы профиля, которые разрешено читать (email скрыт политиками). */
     private val profileColumns = Columns.list("id", "username", "avatar_url", "bio", "avatar_color", "banner_style")
 
     private fun requireUserId(): String =
         AuthRepository.currentUserId() ?: throw AppException("Войдите в аккаунт")
 
-    // ---------- Профиль ----------
 
     suspend fun getProfile(userId: String): Profile? =
         supabase.from("profiles")
@@ -37,7 +31,6 @@ object UserRepository {
         }) { filter { eq("id", userId) } }
     }
 
-    // ---------- Избранное ----------
 
     private suspend fun getFavoriteIds(userId: String): List<String> =
         supabase.from("favorites")
@@ -53,7 +46,6 @@ object UserRepository {
         return gameId in getFavoriteIds(userId)
     }
 
-    /** Добавляет или убирает игру из избранного. Возвращает новое состояние. */
     suspend fun toggleFavorite(gameId: String): Boolean {
         val userId = requireUserId()
         val ids = getFavoriteIds(userId)
@@ -70,8 +62,6 @@ object UserRepository {
         return true
     }
 
-    // ---------- Оценки, рецензии, «пройдено» ----------
-
     suspend fun getMyReview(gameId: String): Review? {
         val userId = AuthRepository.currentUserId() ?: return null
         return supabase.from("reviews")
@@ -84,16 +74,13 @@ object UserRepository {
             .select { filter { eq("user_id", userId) } }
             .decodeList<Review>()
 
-    /** Оценка 0.5..5.0 с шагом 0.5 или null — удалить оценку. */
     suspend fun saveRating(gameId: String, rating: Float?) {
         if (rating != null) require(isValidRating(rating)) { "Недопустимая оценка: $rating" }
         updateMyReview(gameId) { current ->
-            // при первой оценке игра считается пройденной (как и раньше в приложении)
             current.copy(rating = rating, isCompleted = current.isCompleted || (rating != null && current.rating == null))
         }
     }
 
-    /** Текст рецензии или null — удалить рецензию (оценка при этом остаётся). */
     suspend fun saveComment(gameId: String, comment: String?) {
         updateMyReview(gameId) { it.copy(comment = comment?.trim()?.takeIf(String::isNotEmpty)) }
     }
@@ -102,10 +89,6 @@ object UserRepository {
         updateMyReview(gameId) { it.copy(isCompleted = completed) }
     }
 
-    /**
-     * Общая логика изменения записи reviews: читаем свою запись, меняем,
-     * затем обновляем/создаём её. Если в записи ничего не осталось — удаляем.
-     */
     private suspend fun updateMyReview(gameId: String, change: (Review) -> Review) {
         val userId = requireUserId()
         val existing = getMyReview(gameId)
@@ -141,9 +124,6 @@ object UserRepository {
             .map { RatedGame(it, ratings[it.id]) }
     }
 
-    // ---------- Активность ----------
-
-    /** Для каждой игры хранится одна последняя запись активности «review». */
     private suspend fun logActivity(userId: String, gameId: String, hasReview: Boolean) {
         supabase.from("activity_feed").delete {
             filter { eq("user_id", userId); eq("target_game_id", gameId); eq("action_type", "review") }
@@ -173,7 +153,6 @@ object UserRepository {
         return GameRepository.getGamesByIds(ids)
     }
 
-    /** Новая запись reviews без created_at — дату ставит база. */
     @Serializable
     private data class NewReview(
         val id: String,

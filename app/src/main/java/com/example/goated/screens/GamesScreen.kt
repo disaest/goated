@@ -25,7 +25,6 @@ import com.example.goated.navigation.Routes
 import com.example.goated.ui.theme.*
 import com.example.goated.viewmodel.CompletedGamesViewModel
 
-/** Пройденные игры пользователя (reviews.is_completed = true) с его оценками. */
 @Composable
 fun GamesScreen(navController: NavHostController) {
     val userId = AuthRepository.currentUserId()

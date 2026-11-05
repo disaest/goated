@@ -5,10 +5,8 @@ import io.ktor.client.network.sockets.ConnectTimeoutException
 import io.ktor.client.plugins.HttpRequestTimeoutException
 import java.io.IOException
 
-/** Ошибка с уже готовым текстом для пользователя. */
 class AppException(message: String) : Exception(message)
 
-/** Переводит любую ошибку Supabase/сети в понятное сообщение на русском. */
 fun Throwable.toUserMessage(): String {
     if (this is AppException) return message ?: "Ошибка"
     val text = (message ?: "").lowercase()

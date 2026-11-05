@@ -12,7 +12,5 @@ object Dimens {
     val TopBarHeight = 112.dp
     val BottomBarHeight = 64.dp
     val BottomIconSize = 26.dp
-
-    /** Пропорции вертикальной обложки игры (ширина / высота). */
     const val CoverAspectRatio = 2f / 3f
 }

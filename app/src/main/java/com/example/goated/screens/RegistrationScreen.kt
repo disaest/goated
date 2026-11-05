@@ -33,10 +33,6 @@ import com.example.goated.R
 import com.example.goated.ui.theme.*
 import com.example.goated.viewmodel.AuthViewModel
 
-/**
- * Вход и регистрация (макет «Registration»): фон registration_bg,
- * логотип, подсказка и компактный блок с полями.
- */
 @Composable
 fun RegistrationScreen(vm: AuthViewModel = viewModel()) {
     val state by vm.state.collectAsStateWithLifecycle()
@@ -166,7 +162,6 @@ private fun ModeSwitch(isSignUp: Boolean, onToggle: () -> Unit) {
     }
 }
 
-/** Компактное поле ввода с подписью сверху, как в Figma. */
 @Composable
 private fun AuthField(
     label: String,

@@ -25,7 +25,6 @@ import com.example.goated.navigation.Routes
 import com.example.goated.ui.theme.*
 import com.example.goated.viewmodel.GenreGamesViewModel
 
-/** Все игры выбранного жанра (по макету «Coop Genre»). */
 @Composable
 fun CoopGenreScreen(navController: NavHostController, genreId: Int) {
     val vm: GenreGamesViewModel = viewModel(key = "genre_$genreId") { GenreGamesViewModel(genreId) }
@@ -60,7 +59,6 @@ fun CoopGenreScreen(navController: NavHostController, genreId: Int) {
     }
 }
 
-/** Плитка «назад» первой в сетке, как в макете Figma. */
 @Composable
 private fun BackTile(onClick: () -> Unit) {
     val shape = RoundedCornerShape(Dimens.GameCardRadius)

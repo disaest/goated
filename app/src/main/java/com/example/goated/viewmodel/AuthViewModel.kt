@@ -10,7 +10,6 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-/** Форма входа и регистрации. После успеха сессия меняется, и навигация показывает профиль. */
 class AuthViewModel : ViewModel() {
 
     data class UiState(

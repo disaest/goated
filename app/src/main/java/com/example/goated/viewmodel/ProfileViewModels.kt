@@ -16,7 +16,6 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-/** Профиль: данные пользователя, избранное, активность, оформление, выход. */
 class ProfileViewModel(private val userId: String) : ViewModel() {
 
     data class UiState(
@@ -33,7 +32,6 @@ class ProfileViewModel(private val userId: String) : ViewModel() {
     private val _state = MutableStateFlow(UiState())
     val state: StateFlow<UiState> = _state.asStateFlow()
 
-    /** Вызывается при каждом открытии экрана, чтобы показать свежие данные. */
     fun refresh() {
         viewModelScope.launch {
             _state.update { it.copy(loading = it.profile == null, error = null) }
@@ -89,8 +87,6 @@ class ProfileViewModel(private val userId: String) : ViewModel() {
 
     fun messageShown() = _state.update { it.copy(message = null) }
 }
-
-/** Экран «Пройденные игры» (reviews.is_completed = true). */
 class CompletedGamesViewModel(private val userId: String) : ViewModel() {
 
     data class UiState(

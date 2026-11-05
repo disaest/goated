@@ -15,10 +15,6 @@ import androidx.compose.ui.unit.dp
 import com.example.goated.R
 import com.example.goated.ui.theme.*
 
-/**
- * Верхняя панель с сине-чёрным градиентом и логотипом Goated.
- * subtitle — название раздела под логотипом с тонкой голубой полоской (как в Figma).
- */
 @Composable
 fun GradientTopBar(
     subtitle: String? = null,

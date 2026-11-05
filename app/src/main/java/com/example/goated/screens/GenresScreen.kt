@@ -28,7 +28,6 @@ import com.example.goated.navigation.Routes
 import com.example.goated.ui.theme.*
 import com.example.goated.viewmodel.GenresViewModel
 
-/** Жанры: карточка жанра и три самые популярные игры этого жанра. */
 @Composable
 fun GenresScreen(navController: NavHostController, vm: GenresViewModel = viewModel()) {
     val state by vm.state.collectAsStateWithLifecycle()
@@ -68,7 +67,6 @@ fun GenresScreen(navController: NavHostController, vm: GenresViewModel = viewMod
     }
 }
 
-/** Карточка жанра: градиент сверху вниз, нижняя часть темнее. */
 @Composable
 fun GenreCard(name: String, modifier: Modifier = Modifier, onClick: () -> Unit) {
     val shape = RoundedCornerShape(Dimens.GameCardRadius)

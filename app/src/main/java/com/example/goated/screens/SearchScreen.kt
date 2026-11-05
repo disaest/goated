@@ -32,7 +32,6 @@ import com.example.goated.navigation.Routes
 import com.example.goated.ui.theme.*
 import com.example.goated.viewmodel.SearchViewModel
 
-/** Поиск игр по названию. До ввода запроса — подсказки: жанры и популярные игры. */
 @Composable
 fun SearchScreen(navController: NavHostController, vm: SearchViewModel = viewModel()) {
     val state by vm.state.collectAsStateWithLifecycle()

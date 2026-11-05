@@ -15,22 +15,13 @@ import kotlinx.serialization.json.contentOrNull
 import kotlinx.serialization.json.jsonPrimitive
 import kotlinx.serialization.json.put
 
-/**
- * Регистрация, вход и выход через Supabase Auth.
- * Пароль хранит только Supabase Auth, в таблицах приложения его нет.
- */
+
 object AuthRepository {
 
-    /** Текущее состояние сессии: загрузка / авторизован / не авторизован. */
     val sessionStatus: StateFlow<SessionStatus> get() = supabase.auth.sessionStatus
 
     fun currentUserId(): String? = supabase.auth.currentUserOrNull()?.id
 
-    /**
-     * Регистрация: создаёт пользователя в auth.users и профиль в profiles.
-     * Профиль создаёт триггер в БД (по username из metadata), а приложение
-     * дополнительно проверяет, что он появился, и при необходимости создаёт сам.
-     */
     suspend fun signUp(email: String, username: String, password: String) {
         val name = username.trim()
         val mail = email.trim()
@@ -46,7 +37,6 @@ object AuthRepository {
         ensureProfile(userId, name, mail)
     }
 
-    /** Вход по логину (username) или по email и паролю. */
     suspend fun signIn(login: String, password: String) {
         val value = login.trim()
         val email = if ('@' in value) value else findEmailByUsername(value)
@@ -70,7 +60,6 @@ object AuthRepository {
             .isNotEmpty()
     }
 
-    /** Email по username через функцию get_email_by_username (см. SQL-миграцию). */
     private suspend fun findEmailByUsername(username: String): String? {
         return try {
             val result = supabase.postgrest.rpc(
