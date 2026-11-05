@@ -1,3 +1,4 @@
+
 package com.example.goated.navigation
 
 import androidx.annotation.DrawableRes
@@ -6,6 +7,7 @@ import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Snackbar
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
@@ -25,9 +27,9 @@ import androidx.navigation.navArgument
 import com.example.goated.R
 import com.example.goated.components.BottomBar
 import com.example.goated.screens.*
+import com.example.goated.ui.theme.AccentBlue
 import com.example.goated.ui.theme.DarkBackground
 
-/** Маршруты приложения. */
 object Routes {
     const val MAIN = "main"
     const val SEARCH = "search"
@@ -41,15 +43,17 @@ object Routes {
     fun gameCard(gameId: String) = "game_card/$gameId"
 }
 
-/** Четыре раздела нижней навигации. */
-enum class Tab(val route: String, @param:DrawableRes val icon: Int, val label: String) {
+enum class Tab(
+    val route: String,
+    @param:DrawableRes val icon: Int,
+    val label: String
+) {
     Main(Routes.MAIN, R.drawable.ic_nav_home, "Главная"),
     Search(Routes.SEARCH, R.drawable.ic_nav_search, "Поиск"),
     Genres(Routes.GENRES, R.drawable.ic_nav_genres, "Жанры"),
     Profile(Routes.PROFILE, R.drawable.ic_nav_profile, "Профиль");
 
     companion object {
-        /** Какой раздел подсвечивать для текущего экрана. */
         fun forRoute(route: String?): Tab? = when (route) {
             Routes.MAIN -> Main
             Routes.SEARCH -> Search
@@ -60,13 +64,13 @@ enum class Tab(val route: String, @param:DrawableRes val icon: Int, val label: S
     }
 }
 
-/** Общий Snackbar для коротких сообщений (ошибки, «сохранено» и т.п.). */
 val LocalSnackbar = staticCompositionLocalOf { SnackbarHostState() }
 
-/** Переход в раздел без дублирования экранов в стеке. */
 fun NavHostController.navigateToTab(tab: Tab) {
     navigate(tab.route) {
-        popUpTo(graph.findStartDestination().id) { saveState = true }
+        popUpTo(graph.findStartDestination().id) {
+            saveState = true
+        }
         launchSingleTop = true
         restoreState = true
     }
@@ -82,30 +86,66 @@ fun AppNavigation(navController: NavHostController = rememberNavController()) {
         Scaffold(
             containerColor = DarkBackground,
             contentWindowInsets = WindowInsets(0),
-            snackbarHost = { SnackbarHost(snackbar) },
+            snackbarHost = {
+                SnackbarHost(snackbar) { data ->
+                    Snackbar(
+                        snackbarData = data,
+                        containerColor = DarkBackground,
+                        contentColor = AccentBlue,
+                        actionColor = AccentBlue,
+                        dismissActionContentColor = AccentBlue
+                    )
+                }
+            },
             bottomBar = {
-                BottomBar(selectedTab = Tab.forRoute(currentRoute), onSelect = navController::navigateToTab)
+                BottomBar(
+                    selectedTab = Tab.forRoute(currentRoute),
+                    onSelect = navController::navigateToTab
+                )
             }
         ) { padding ->
             NavHost(
                 navController = navController,
                 startDestination = Routes.MAIN,
-                modifier = Modifier.fillMaxSize().padding(padding).consumeWindowInsets(padding)
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(padding)
+                    .consumeWindowInsets(padding)
             ) {
-                composable(Routes.MAIN) { MainScreen(navController) }
-                composable(Routes.SEARCH) { SearchScreen(navController) }
-                composable(Routes.GENRES) { GenresScreen(navController) }
+                composable(Routes.MAIN) {
+                    MainScreen(navController)
+                }
+                composable(Routes.SEARCH) {
+                    SearchScreen(navController)
+                }
+                composable(Routes.GENRES) {
+                    GenresScreen(navController)
+                }
                 composable(
                     Routes.GENRE_GAMES,
-                    arguments = listOf(navArgument("genreId") { type = NavType.IntType })
+                    arguments = listOf(
+                        navArgument("genreId") {
+                            type = NavType.IntType
+                        }
+                    )
                 ) { entry ->
-                    CoopGenreScreen(navController, entry.arguments?.getInt("genreId") ?: 0)
+                    CoopGenreScreen(
+                        navController,
+                        entry.arguments?.getInt("genreId") ?: 0
+                    )
                 }
                 composable(Routes.GAME_CARD) { entry ->
-                    GameCardScreen(navController, entry.arguments?.getString("gameId").orEmpty())
+                    GameCardScreen(
+                        navController,
+                        entry.arguments?.getString("gameId").orEmpty()
+                    )
                 }
-                composable(Routes.PROFILE) { ProfileRoute(navController) }
-                composable(Routes.COMPLETED_GAMES) { GamesScreen(navController) }
+                composable(Routes.PROFILE) {
+                    ProfileRoute(navController)
+                }
+                composable(Routes.COMPLETED_GAMES) {
+                    GamesScreen(navController)
+                }
             }
         }
     }

@@ -1,11 +1,16 @@
+
 package com.example.goated.screens
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
@@ -15,10 +20,22 @@ import com.example.goated.navigation.Routes
 import com.example.goated.ui.theme.Dimens
 import com.example.goated.viewmodel.MainViewModel
 
-/** Главная: подборки Popular, New, Recommended сеткой по четыре карточки. */
 @Composable
 fun MainScreen(navController: NavHostController, vm: MainViewModel = viewModel()) {
     val state by vm.state.collectAsStateWithLifecycle()
+    val lifecycleOwner = LocalLifecycleOwner.current
+
+    DisposableEffect(lifecycleOwner, vm) {
+        val observer = LifecycleEventObserver { _, event ->
+            if (event == Lifecycle.Event.ON_RESUME) {
+                vm.load()
+            }
+        }
+        lifecycleOwner.lifecycle.addObserver(observer)
+        onDispose {
+            lifecycleOwner.lifecycle.removeObserver(observer)
+        }
+    }
 
     Column(Modifier.fillMaxSize()) {
         GradientTopBar()
@@ -33,7 +50,9 @@ fun MainScreen(navController: NavHostController, vm: MainViewModel = viewModel()
                 items(state.items, key = { it.collection.id }) { section ->
                     Column {
                         CategoryTitle(section.collection.title)
-                        GameGrid(section.games) { navController.navigate(Routes.gameCard(it.id)) }
+                        GameGrid(section.games) {
+                            navController.navigate(Routes.gameCard(it.id))
+                        }
                     }
                 }
             }
@@ -41,10 +60,6 @@ fun MainScreen(navController: NavHostController, vm: MainViewModel = viewModel()
     }
 }
 
-/**
- * Сетка карточек по четыре в ряд для использования внутри прокручиваемого списка
- * (вложенный LazyVerticalGrid внутри LazyColumn использовать нельзя).
- */
 @Composable
 fun GameGrid(
     games: List<Game>,
@@ -63,9 +78,10 @@ fun GameGrid(
                         onClick = { onClick(game) }
                     )
                 }
-                repeat(4 - row.size) { Spacer(Modifier.weight(1f)) }
+                repeat(4 - row.size) {
+                    Spacer(Modifier.weight(1f))
+                }
             }
         }
     }
 }
-
