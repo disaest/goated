@@ -62,45 +62,45 @@ fun GameCardScreen(navController: NavHostController, gameId: String) {
             ErrorView(state.error ?: "Игра не найдена", onRetry = vm::load)
         }
         else -> Box(Modifier.fillMaxSize()) {
-          Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState())) {
-            Banner(
-                game = game,
-                isFavorite = state.isFavorite,
-                showFavorite = state.isLoggedIn,
-                onBack = { navController.popBackStack() },
-                onFavorite = vm::toggleFavorite
-            )
-            Column(Modifier.padding(horizontal = Dimens.ScreenPadding)) {
-                GameInfo(game)
-                BlueDivider()
-                RatingBlock(
+            Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState())) {
+                Banner(
                     game = game,
-                    myRating = state.myRating,
-                    isCompleted = state.myReview?.isCompleted == true,
-                    isLoggedIn = state.isLoggedIn,
-                    saving = state.saving,
-                    onRate = vm::setRating,
-                    onToggleCompleted = vm::toggleCompleted,
-                    onLogin = { navController.navigateToTab(Tab.Profile) }
+                    isFavorite = state.isFavorite,
+                    showFavorite = state.isLoggedIn,
+                    onBack = { navController.popBackStack() },
+                    onFavorite = vm::toggleFavorite
                 )
-                if (state.screenshots.isNotEmpty()) {
+                Column(Modifier.padding(horizontal = Dimens.ScreenPadding)) {
+                    GameInfo(game)
                     BlueDivider()
-                    ScreenshotPager(state.screenshots, game.title)
+                    RatingBlock(
+                        game = game,
+                        myRating = state.myRating,
+                        isCompleted = state.myReview?.isCompleted == true,
+                        isLoggedIn = state.isLoggedIn,
+                        saving = state.saving,
+                        onRate = vm::setRating,
+                        onToggleCompleted = vm::toggleCompleted,
+                        onLogin = { navController.navigateToTab(Tab.Profile) }
+                    )
+                    if (state.screenshots.isNotEmpty()) {
+                        BlueDivider()
+                        ScreenshotPager(state.screenshots, game.title)
+                    }
+                    BlueDivider()
+                    ReviewsBlock(
+                        state = state,
+                        onSave = vm::saveComment,
+                        onDelete = vm::deleteComment,
+                        onLogin = { navController.navigateToTab(Tab.Profile) }
+                    )
+                    Spacer(Modifier.height(24.dp))
                 }
-                BlueDivider()
-                ReviewsBlock(
-                    state = state,
-                    onSave = vm::saveComment,
-                    onDelete = vm::deleteComment,
-                    onLogin = { navController.navigateToTab(Tab.Profile) }
-                )
-                Spacer(Modifier.height(24.dp))
             }
-          }
-          Box(
-              Modifier.fillMaxWidth().windowInsetsTopHeight(WindowInsets.statusBars)
-                  .background(Black.copy(alpha = 0.6f))
-          )
+            Box(
+                Modifier.fillMaxWidth().windowInsetsTopHeight(WindowInsets.statusBars)
+                    .background(Black.copy(alpha = 0.6f))
+            )
         }
     }
 }
