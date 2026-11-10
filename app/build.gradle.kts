@@ -7,9 +7,6 @@ plugins {
     alias(libs.plugins.kotlin.serialization)
 }
 
-// Адрес и публичный (publishable) ключ Supabase читаются из local.properties,
-// чтобы не хранить их в Git. Если ключей в local.properties нет, используются
-// значения учебного проекта по умолчанию.
 val localProps = Properties().apply {
     val f = rootProject.file("local.properties")
     if (f.exists()) f.inputStream().use { load(it) }
